@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:align_positioned/align_positioned.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modal_gif_picker/modal_gif_picker.dart';
@@ -14,6 +15,7 @@ import 'package:stories_editor/src/domain/providers/notifiers/text_editing_notif
 import 'package:stories_editor/src/presentation/utils/constants/app_enums.dart';
 import 'package:stories_editor/src/presentation/widgets/animated_onTap_button.dart';
 import 'package:stories_editor/src/presentation/widgets/file_image_bg.dart';
+
 
 class DraggableWidget extends StatelessWidget {
   final EditableItem draggableWidget;
@@ -133,8 +135,26 @@ class DraggableWidget extends StatelessWidget {
         );
         break;
 
+      /// video [file_video_gb.dart]
       case ItemType.video:
-        overlayWidget = const Center();
+        if (_controlProvider.mediaPath.isNotEmpty) {
+          if (kDebugMode) {
+            print("video path == ${_controlProvider.videoPath}");
+          }
+          overlayWidget = SizedBox(
+            width: screenUtil.screenWidth - 144.w,
+            child: FileVideoBG(
+              filePath: File(_controlProvider.mediaPath),
+              videoPath: _controlProvider.videoPath,
+              generatedGradient: (color1, color2) {
+                _colorProvider.color1 = color1;
+                _colorProvider.color2 = color2;
+              },
+            ),
+          );
+        } else {
+          overlayWidget = Container();
+        }
     }
 
     /// set widget data position on main screen

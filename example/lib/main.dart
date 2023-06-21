@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter stories editor Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -47,6 +48,7 @@ class _ExampleState extends State<Example> {
                             //isCustomFontList: true,
                             onDone: (uri) {
                               debugPrint(uri);
+                              // ignore: deprecated_member_use
                               Share.shareFiles([uri]);
                             },
                           )));

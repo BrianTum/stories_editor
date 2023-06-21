@@ -63,9 +63,12 @@ class _TextEditorState extends State<TextEditor> {
                         ),
 
                         /// text size
-                        const Align(
-                          alignment: Alignment.centerLeft,
-                          child: SizeSliderWidget(),
+                        const Padding(
+                          padding: EdgeInsets.only(left: 10.0),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: SizeSliderWidget(),
+                          ),
                         ),
 
                         /// top tools
@@ -80,7 +83,7 @@ class _TextEditorState extends State<TextEditor> {
 
                         /// font family selector (bottom)
                         Positioned(
-                          bottom: screenUtil.screenHeight * 0.21,
+                          bottom: screenUtil.screenHeight * 0.05,
                           child: Visibility(
                             visible: editorNotifier.isFontFamily &&
                                 !editorNotifier.isTextAnimation,

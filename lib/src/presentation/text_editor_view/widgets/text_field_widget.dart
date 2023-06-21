@@ -131,7 +131,7 @@ class TextFieldWidget extends StatelessWidget {
       cursorColor: controlNotifier.colorList![editorNotifier.textColor],
       minLines: 1,
       keyboardType: TextInputType.multiline,
-      maxLines: null,
+      maxLines: 5,
       decoration: null,
       onChanged: (value) {
         editorNotifier.text = value;

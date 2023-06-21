@@ -1,11 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:stories_editor/src/domain/providers/notifiers/control_provider.dart';
 import 'package:stories_editor/src/domain/providers/notifiers/draggable_widget_notifier.dart';
 import 'package:stories_editor/src/domain/providers/notifiers/painting_notifier.dart';
-import 'package:stories_editor/src/domain/sevices/save_as_image.dart';
+// import 'package:stories_editor/src/domain/sevices/save_as_image.dart';
 import 'package:stories_editor/src/presentation/utils/modal_sheets.dart';
 import 'package:stories_editor/src/presentation/widgets/animated_onTap_button.dart';
 import 'package:stories_editor/src/presentation/widgets/tool_button.dart';
@@ -23,9 +24,10 @@ class TopTools extends StatefulWidget {
 class _TopToolsState extends State<TopTools> {
   @override
   Widget build(BuildContext context) {
-    return Consumer3<ControlNotifier, PaintingNotifier,
+    return Consumer4<ControlNotifier, DraggableWidgetNotifier, PaintingNotifier,
         DraggableWidgetNotifier>(
-      builder: (_, controlNotifier, paintingNotifier, itemNotifier, __) {
+      builder: (_, controlNotifier, itemProvider, paintingNotifier,
+          itemNotifier, __) {
         return SafeArea(
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 20.w),
@@ -73,18 +75,22 @@ class _TopToolsState extends State<TopTools> {
                     ),
                     backGroundColor: Colors.black12,
                     onTap: () async {
-                      if (paintingNotifier.lines.isNotEmpty ||
-                          itemNotifier.draggableWidget.isNotEmpty) {
-                        var response = await takePicture(
-                            contentKey: widget.contentKey,
-                            context: context,
-                            saveToGallery: true);
-                        if (response) {
-                          Fluttertoast.showToast(msg: 'Successfully saved');
-                        } else {
-                          Fluttertoast.showToast(msg: 'Error');
-                        }
+                      if (kDebugMode) {
+                        print(
+                            "objects here == ${itemProvider.draggableWidget.first.videoController!.value}");
                       }
+                      // if (paintingNotifier.lines.isNotEmpty ||
+                      //     itemNotifier.draggableWidget.isNotEmpty) {
+                      //   var response = await takePicture(
+                      //       contentKey: widget.contentKey,
+                      //       context: context,
+                      //       saveToGallery: true);
+                      //   if (response) {
+                      //     Fluttertoast.showToast(msg: 'Successfully saved');
+                      //   } else {
+                      //     Fluttertoast.showToast(msg: 'Error');
+                      //   }
+                      // }
                     }),
                 ToolButton(
                     child: const ImageIcon(

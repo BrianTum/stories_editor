@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:modal_gif_picker/modal_gif_picker.dart';
+import 'package:video_player/video_player.dart';
 import 'package:stories_editor/src/presentation/utils/constants/app_enums.dart';
 
 class EditableItem {
@@ -8,6 +9,7 @@ class EditableItem {
 
   /// item position
   Offset position = const Offset(0.0, 0.0);
+  Offset focalPoint = const Offset(0.0, 0.0);
   double scale = 1;
   double rotation = 0;
   ItemType type = ItemType.text;
@@ -25,4 +27,7 @@ class EditableItem {
 
   /// Gif
   GiphyGif gif = GiphyGif(id: '0');
+
+  ///
+  VideoPlayerController? videoController;
 }

@@ -44,6 +44,7 @@ class _PaintingState extends State<Painting> {
     PaintingModel? line;
 
     /// screen size
+    // ignore: deprecated_member_use
     var screenSize = MediaQueryData.fromWindow(WidgetsBinding.instance.window);
 
     /// on gestures start

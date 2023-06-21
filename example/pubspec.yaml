@@ -17,6 +17,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   share_plus: ^4.0.10+1
   permission_handler: ^10.0.0
+  ffmpeg_kit_flutter_min_gpl: ^5.1.0-LTS
+
 
   stories_editor:
     path: ../
@@ -32,6 +34,9 @@ flutter:
 
 
   uses-material-design: true
+
+  assets:
+    - assets/images/img.png
 
   fonts:
     - family:  Shizuru

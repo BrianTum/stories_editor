@@ -48,25 +48,34 @@ class _FileImageBGState extends State<FileImageBG> {
         setState(() {});
         widget.generatedGradient(color1, color2);
         callback.cancel();
-        stateController.close();
       }
     });
     super.initState();
   }
 
   @override
+  void dispose() {
+    stateController.close();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final ScreenUtil screenUtil = ScreenUtil();
     return SizedBox(
-        height: screenUtil.screenHeight,
-        width: screenUtil.screenWidth,
-        child: RepaintBoundary(
-            key: paintKey,
-            child: Center(
-                child: Image.file(
-              File(widget.filePath!.path),
-              key: imageKey,
-              filterQuality: FilterQuality.high,
-            ))));
+      height: screenUtil.screenHeight,
+      width: screenUtil.screenWidth,
+      child: RepaintBoundary(
+        key: paintKey,
+        child: Center(
+          child: Image.file(
+            File(widget.filePath!.path),
+            key: imageKey,
+            filterQuality: FilterQuality.high,
+          ),
+        ),
+      ),
+    );
   }
 }

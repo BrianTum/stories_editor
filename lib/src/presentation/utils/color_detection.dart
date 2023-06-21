@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
-import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 
 class ColorDetection {
@@ -35,7 +34,9 @@ class ColorDetection {
     int pixel32 = photo!.getPixelSafe(px.toInt(), py.toInt());
     int hex = abgrToArgb(pixel32);
 
-    stateController!.add(Color(hex));
+    if (!stateController!.isClosed) {
+      stateController!.add(Color(hex));
+    }
     return Color(hex);
   }
 

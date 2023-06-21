@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stories_editor/src/presentation/utils/constants/app_colors.dart';
 import 'package:stories_editor/src/presentation/utils/constants/font_family.dart';
+import 'package:video_player/video_player.dart';
 
 class ControlNotifier extends ChangeNotifier {
   String _giphyKey = '';
@@ -9,6 +10,18 @@ class ControlNotifier extends ChangeNotifier {
   String get giphyKey => _giphyKey;
   set giphyKey(String key) {
     _giphyKey = key;
+    notifyListeners();
+  }
+
+  int _filterIndex = 0;
+
+  /// current gradient index
+  int get filterIndex => _filterIndex;
+
+  /// get current gradient index
+  set filterIndex(int index) {
+    /// set new current gradient index
+    _filterIndex = index;
     notifyListeners();
   }
 
@@ -33,6 +46,18 @@ class ControlNotifier extends ChangeNotifier {
   set isTextEditing(bool val) {
     /// set bool if is text editing
     _isTextEditing = val;
+    notifyListeners();
+  }
+
+  bool _isScaling = false;
+
+  /// is text editor open
+  bool get isScaling => _isScaling;
+
+  /// get bool if is text editing
+  set isScaling(bool val) {
+    /// set bool if is text editing
+    _isScaling = val;
     notifyListeners();
   }
 
@@ -99,11 +124,19 @@ class ControlNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// get image path
+  /// get asset path
   String _mediaPath = '';
   String get mediaPath => _mediaPath;
   set mediaPath(String media) {
     _mediaPath = media;
+    notifyListeners();
+  }
+
+  /// get video thumb path
+  String _videoPath = '';
+  String get videoPath => _videoPath;
+  set videoPath(String media) {
+    _videoPath = media;
     notifyListeners();
   }
 
@@ -112,5 +145,21 @@ class ControlNotifier extends ChangeNotifier {
   set isPhotoFilter(bool filter) {
     _isPhotoFilter = filter;
     notifyListeners();
+  }
+
+  VideoPlayerController? _videoPlayerController;
+
+  VideoPlayerController get videoPlayerController => _videoPlayerController!;
+
+  set videoPlayerController(VideoPlayerController controller) {
+    _videoPlayerController?.dispose();
+    _videoPlayerController = controller;
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _videoPlayerController?.dispose();
+    super.dispose();
   }
 }
