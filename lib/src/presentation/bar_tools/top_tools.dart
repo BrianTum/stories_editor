@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
@@ -6,10 +7,19 @@ import 'package:provider/provider.dart';
 import 'package:stories_editor/src/domain/providers/notifiers/control_provider.dart';
 import 'package:stories_editor/src/domain/providers/notifiers/draggable_widget_notifier.dart';
 import 'package:stories_editor/src/domain/providers/notifiers/painting_notifier.dart';
+import 'package:stories_editor/src/presentation/utils/constants/app_enums.dart';
 // import 'package:stories_editor/src/domain/sevices/save_as_image.dart';
 import 'package:stories_editor/src/presentation/utils/modal_sheets.dart';
 import 'package:stories_editor/src/presentation/widgets/animated_onTap_button.dart';
 import 'package:stories_editor/src/presentation/widgets/tool_button.dart';
+import 'package:video_player/video_player.dart';
+import '../../domain/models/editable_items.dart';
+import '../../domain/providers/notifiers/gradient_notifier.dart';
+import '../../domain/providers/notifiers/scroll_notifier.dart';
+import '../../domain/sevices/save_as_image.dart';
+import '../../domain/sevices/save_as_video.dart';
+import '../image_editor/crop.dart';
+import '../video_editor/video_editor.dart';
 
 class TopTools extends StatefulWidget {
   final GlobalKey contentKey;
@@ -24,10 +34,10 @@ class TopTools extends StatefulWidget {
 class _TopToolsState extends State<TopTools> {
   @override
   Widget build(BuildContext context) {
-    return Consumer4<ControlNotifier, DraggableWidgetNotifier, PaintingNotifier,
-        DraggableWidgetNotifier>(
-      builder: (_, controlNotifier, itemProvider, paintingNotifier,
-          itemNotifier, __) {
+    return Consumer6<ControlNotifier, DraggableWidgetNotifier, ScrollNotifier,
+        PaintingNotifier, GradientNotifier, DraggableWidgetNotifier>(
+      builder: (_, controlNotifier, itemProvider, scrollProvider,
+          paintingNotifier, colorProvider, itemNotifier, __) {
         return SafeArea(
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 20.w),
@@ -51,10 +61,14 @@ class _TopToolsState extends State<TopTools> {
                         Navigator.pop(context);
                       }
                     }),
-                if (controlNotifier.mediaPath.isEmpty)
-                  _selectColor(
-                      controlProvider: controlNotifier,
-                      onTap: () {
+                _selectColor(
+                    controlProvider: controlNotifier,
+                    colorProvider: colorProvider,
+                    onTap: () {
+                      if (controlNotifier.mediaPath != "") {
+                        controlNotifier.isVideoTheme =
+                            !controlNotifier.isVideoTheme;
+                      } else {
                         if (controlNotifier.gradientIndex >=
                             controlNotifier.gradientColors!.length - 1) {
                           setState(() {
@@ -63,9 +77,13 @@ class _TopToolsState extends State<TopTools> {
                         } else {
                           setState(() {
                             controlNotifier.gradientIndex += 1;
+                            if (controlNotifier.mediaPath.isNotEmpty) {
+                              controlNotifier.isVideoTheme = false;
+                            }
                           });
                         }
-                      }),
+                      }
+                    }),
                 ToolButton(
                     child: const ImageIcon(
                       AssetImage('assets/icons/download.png',
@@ -75,45 +93,145 @@ class _TopToolsState extends State<TopTools> {
                     ),
                     backGroundColor: Colors.black12,
                     onTap: () async {
-                      if (kDebugMode) {
-                        print(
-                            "objects here == ${itemProvider.draggableWidget.first.videoController!.value}");
+                      if (itemNotifier.draggableWidget.first.type ==
+                          ItemType.video) {
+                        saveVideo(controlNotifier, itemNotifier, colorProvider,
+                            widget.contentKey, context);
+                      } else {
+                        if (paintingNotifier.lines.isNotEmpty ||
+                            itemNotifier.draggableWidget.isNotEmpty) {
+                          String response = await takePicture(
+                            contentKey: widget.contentKey,
+                            // saveToGallery: true,
+                          );
+
+                          showDialog(
+                            context: context,
+                            builder: (_) =>
+                                Center(child: Image.file(File(response))),
+                          );
+                        }
                       }
-                      // if (paintingNotifier.lines.isNotEmpty ||
-                      //     itemNotifier.draggableWidget.isNotEmpty) {
-                      //   var response = await takePicture(
-                      //       contentKey: widget.contentKey,
-                      //       context: context,
-                      //       saveToGallery: true);
-                      //   if (response) {
-                      //     Fluttertoast.showToast(msg: 'Successfully saved');
-                      //   } else {
-                      //     Fluttertoast.showToast(msg: 'Error');
-                      //   }
-                      // }
                     }),
                 ToolButton(
                     child: const ImageIcon(
-                      AssetImage('assets/icons/stickers.png',
+                      AssetImage('assets/icons/crop.png',
                           package: 'stories_editor'),
                       color: Colors.white,
                       size: 20,
                     ),
                     backGroundColor: Colors.black12,
-                    onTap: () => createGiphyItem(
-                        context: context, giphyKey: controlNotifier.giphyKey)),
-                ToolButton(
-                    child: const ImageIcon(
-                      AssetImage('assets/icons/draw.png',
-                          package: 'stories_editor'),
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                    backGroundColor: Colors.black12,
-                    onTap: () {
-                      controlNotifier.isPainting = true;
-                      //createLinePainting(context: context);
+                    onTap: () async {
+                      if (itemProvider.draggableWidget.isNotEmpty &&
+                          itemProvider.draggableWidget.first.type ==
+                              ItemType.image) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ResizableWidget(
+                              child: Center(
+                                child: Container(
+                                  color: Colors.transparent,
+                                ),
+                              ),
+                              imagePath: controlNotifier.mediaPath,
+                              imageWidth:
+                                  itemProvider.draggableWidget.first.mediaWidth,
+                              imageHeight: itemProvider
+                                  .draggableWidget.first.mediaHeight,
+                              cn: controlNotifier,
+                            ),
+                          ),
+                        );
+                      } else if (itemProvider.draggableWidget.isNotEmpty &&
+                          itemProvider.draggableWidget.first.type ==
+                              ItemType.video) {
+                      } else {
+                        return;
+                      }
                     }),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: Container(
+                //     height: 35,
+                //     width: 50,
+                //     decoration: BoxDecoration(
+                //         color: Colors.transparent,
+                //         shape: BoxShape.circle,
+                //         border: Border.all(color: Colors.white, width: 2)),
+                //     child: TextButton(
+                //       onPressed: () {},
+                //       child: const Text("done"),
+                //     ),
+                //   ),
+                // ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: AnimatedOnTapButton(
+                    onTap: () async {
+                      Map mediaData = {};
+                      if (itemProvider.draggableWidget.isNotEmpty &&
+                          itemProvider.draggableWidget.first.type ==
+                              ItemType.image) {
+                        String response =
+                            await takePicture(contentKey: widget.contentKey);
+                        mediaData = {
+                          'type': "photo",
+                          'url': response,
+                          'caption': controlNotifier.textCaption
+                        };
+                      } else if (itemProvider.draggableWidget.isNotEmpty &&
+                          itemProvider.draggableWidget.first.type ==
+                              ItemType.video) {
+                        mediaData = await saveVideo(
+                            controlNotifier,
+                            itemNotifier,
+                            colorProvider,
+                            widget.contentKey,
+                            context);
+                      } else {
+                        mediaData = {'type': "nothing", 'url': "url"};
+                      }
+                      Navigator.pop(context, mediaData);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Material(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(90),
+                        elevation: 1,
+                        shadowColor: Colors.black.withOpacity(0.5),
+                        child: Container(
+                          height: 35,
+                          width: 60,
+                          decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(20),
+                              border:
+                                  Border.all(color: Colors.white, width: 2)),
+                          child: Transform.scale(
+                            scale: 0.8,
+                            child: const Center(
+                                child: Text(
+                              "Done",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20),
+                            )),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+
+                // ToolButton(
+                //     child: const Text("Done"),
+                //     backGroundColor: Colors.black12,
+                //     onTap: () {
+                //       // controlNotifier.isPainting = true;
+                //       //createLinePainting(context: context);
+                //     }),
                 // ToolButton(
                 //   child: ImageIcon(
                 //     const AssetImage('assets/icons/photo_filter.png',
@@ -125,17 +243,17 @@ class _TopToolsState extends State<TopTools> {
                 //   onTap: () => controlNotifier.isPhotoFilter =
                 //   !controlNotifier.isPhotoFilter,
                 // ),
-                ToolButton(
-                  child: const ImageIcon(
-                    AssetImage('assets/icons/text.png',
-                        package: 'stories_editor'),
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                  backGroundColor: Colors.black12,
-                  onTap: () => controlNotifier.isTextEditing =
-                      !controlNotifier.isTextEditing,
-                ),
+                // ToolButton(
+                //   child: const ImageIcon(
+                //     AssetImage('assets/icons/text.png',
+                //         package: 'stories_editor'),
+                //     color: Colors.white,
+                //     size: 20,
+                //   ),
+                //   backGroundColor: Colors.black12,
+                //   onTap: () => controlNotifier.isTextEditing =
+                //       !controlNotifier.isTextEditing,
+                // ),
               ],
             ),
           ),
@@ -145,7 +263,10 @@ class _TopToolsState extends State<TopTools> {
   }
 
   /// gradient color selector
-  Widget _selectColor({onTap, controlProvider}) {
+  Widget _selectColor(
+      {onTap,
+      ControlNotifier? controlProvider,
+      GradientNotifier? colorProvider}) {
     return Padding(
       padding: const EdgeInsets.only(left: 5, right: 5, top: 8),
       child: AnimatedOnTapButton(
@@ -163,8 +284,20 @@ class _TopToolsState extends State<TopTools> {
               gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: controlProvider
-                      .gradientColors![controlProvider.gradientIndex]),
+                  colors: controlProvider!.mediaPath.isEmpty
+                      ? controlProvider
+                          .gradientColors![controlProvider.gradientIndex]
+                      : controlProvider.isVideoTheme == false
+                          ? controlProvider
+                              .gradientColors![controlProvider.gradientIndex]
+                          : [
+                              colorProvider!.color1,
+                              colorProvider.color2,
+                              colorProvider.color3,
+                              colorProvider.color4,
+                              colorProvider.color5,
+                              colorProvider.color6
+                            ]),
               shape: BoxShape.circle,
             ),
           ),

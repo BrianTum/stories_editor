@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:stories_editor/stories_editor.dart';
+
+import 'services/video_process.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,24 +37,73 @@ class _ExampleState extends State<Example> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.black,
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         body: Center(
           child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {
+              Map returnedMap = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => StoriesEditor(
+                          giphyKey: 'C4dMA7Q19nqEGdpfj82T8ssbOeZIylD4',
+                          //fontFamilyList: const ['Shizuru', 'Aladin'],
+                          galleryThumbnailQuality: 300,
+                          //isCustomFontList: true,
+                          onDone: (uri) {
+                            debugPrint("uri here");
+                            // ignore: deprecated_member_use
+                            // Share.shareFiles([uri]);
+                          },
+                        )),
+              );
+
+              if (returnedMap['type'] == 'photo') {
+                showDialog(
+                  context: context,
+                  builder: (_) => Center(
+                      child: Stack(
+                    children: [
+                      Image.file(File(returnedMap['url'])),
+                      Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child: Container(
+                            color: Colors.white24,
+                            height: 60,
+                            child: Center(
+                              child: Text(
+                                returnedMap['caption'],
+                                style: const TextStyle(
+                                    color: Colors.black, fontSize: 20),
+                              ),
+                            ),
+                          ))
+                    ],
+                  )),
+                );
+              } else if (returnedMap['type'] == 'video') {
+                generateGradientVideo(
+                  returnedMap['backgroundImage'],
+                  returnedMap['videoPath'],
+                  returnedMap['filterString'],
+                  returnedMap['duration'],
+                  returnedMap['height'],
+                  returnedMap['width'],
+                  returnedMap['centerX'],
+                  returnedMap['centerY'],
+                  returnedMap['rotation'],
+                  returnedMap['minOffsetDx'],
+                  returnedMap['minOffsetDy'],
+                  returnedMap['caption'],
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => StoriesEditor(
-                            giphyKey: 'C4dMA7Q19nqEGdpfj82T8ssbOeZIylD4',
-                            //fontFamilyList: const ['Shizuru', 'Aladin'],
-                            galleryThumbnailQuality: 300,
-                            //isCustomFontList: true,
-                            onDone: (uri) {
-                              debugPrint(uri);
-                              // ignore: deprecated_member_use
-                              Share.shareFiles([uri]);
-                            },
-                          )));
+                );
+              } else {
+                String value1 = returnedMap['type'];
+                String value2 = returnedMap['url'];
+
+                debugPrint("value1 == $value1 == value2 == $value2");
+              }
             },
             child: const Text('Open Stories Editor'),
           ),

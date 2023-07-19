@@ -39,10 +39,6 @@ class AppColors {
       const Color.fromRGBO(255, 190, 32, 1),
       const Color.fromRGBO(251, 112, 71, 1)
     ],
-    [
-      const Color.fromRGBO(255, 255, 255, 1),
-      const Color.fromRGBO(234, 236, 255, 1)
-    ],
     [HexColor.fromHex('#2AA8F2'), HexColor.fromHex('#A800FF')],
     [HexColor.fromHex('#A800FF'), HexColor.fromHex('#2AA8F2')],
     [HexColor.fromHex('#A800FF'), HexColor.fromHex('#FF0900')],

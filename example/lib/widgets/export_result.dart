@@ -16,9 +16,11 @@ String _fileMBSize(File file) =>
     ' ${(file.lengthSync() / (1024 * 1024)).toStringAsFixed(1)} MB';
 
 class VideoResultPopup extends StatefulWidget {
-  const VideoResultPopup({super.key, required this.video});
+  const VideoResultPopup({Key? key, required this.video, required this.caption})
+      : super(key: key);
 
   final File video;
+  final String caption;
 
   @override
   State<VideoResultPopup> createState() => _VideoResultPopupState();
@@ -75,17 +77,8 @@ class _VideoResultPopupState extends State<VideoResultPopup> {
               aspectRatio: _fileDimension.aspectRatio == 0
                   ? 1
                   : _fileDimension.aspectRatio,
-              child: _isGif
-                  ? Image.file(widget.video)
-                  : GestureDetector(
-                      onTap: () {
-                        if (_controller!.value.isPlaying) {
-                          _controller!.pause();
-                        } else {
-                          _controller!.play();
-                        }
-                      },
-                      child: VideoPlayer(_controller!)),
+              child:
+                  _isGif ? Image.file(widget.video) : VideoPlayer(_controller!),
             ),
             Positioned(
               bottom: 0,
@@ -100,6 +93,7 @@ class _VideoResultPopupState extends State<VideoResultPopup> {
                       .toString(),
                   'Video dimension': _fileDimension.toString(),
                   'Video size': _fileMbSize,
+                  'Caption': widget.caption
                 },
               ),
             ),
@@ -111,7 +105,7 @@ class _VideoResultPopupState extends State<VideoResultPopup> {
 }
 
 class CoverResultPopup extends StatefulWidget {
-  const CoverResultPopup({super.key, required this.cover});
+  const CoverResultPopup({Key? key, required this.cover}) : super(key: key);
 
   final File cover;
 
@@ -164,7 +158,8 @@ class _CoverResultPopupState extends State<CoverResultPopup> {
 }
 
 class FileDescription extends StatelessWidget {
-  const FileDescription({super.key, required this.description});
+  const FileDescription({Key? key, required this.description})
+      : super(key: key);
 
   final Map<String, String> description;
 

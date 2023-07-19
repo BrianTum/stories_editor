@@ -2,6 +2,7 @@ name: stories_editor
 description: This is a package created in the style of the instagram story creator, with which you can create images with images, texts, stickers (Gifs), finger drawing.
 version: 0.2.2
 homepage: https://github.com/camilo1498/stories_editor
+publish_to: none
 
 environment:
   sdk: '>=2.18.2 <3.0.0'
@@ -13,22 +14,30 @@ dependencies:
   # state management
   provider: ^6.0.4
   # image
-  image: ^3.2.2
+  image: ^4.0.17
   path_provider: ^2.0.11
   photo_view: ^0.14.0
-  video_editor: ^2.4.0
+  video_editor:  
+    git:
+      url: https://github.com/Picmoni/video_editor.git
   fraction: ^5.0.0
   helpers: ^1.2.3
   video_player: ^2.6.1
+  ffmpeg_kit_flutter_min_gpl: ^5.1.0
+  auto_size_text_field: ^2.2.1
+  visibility_detector: ^0.4.0+2
+  percent_indicator: ^4.2.3
+  auto_size_text: ^3.0.0
   # with this ref fix `Looking up a deactivated widget's ancestor is unsafe`.
   #photo_view:
   #  git:
   #    url: https://github.com/bluefireteam/photo_view
   #    ref: 8156907eecfa812b181a5a729d790f6d399f311b
-  image_gallery_saver: ^1.7.1
+  image_gallery_saver: ^2.0.3
   #own packages
-  gallery_media_picker: ^0.0.82
-
+  gallery_media_picker:
+    git:
+      url: https://github.com/Picmoni/gallery_media_picker.git
 
   modal_gif_picker: ^0.0.2
   # painting
@@ -56,6 +65,7 @@ flutter:
     - packages/stories_editor/assets/icons/align_left.png
     - packages/stories_editor/assets/icons/align_rigth.png
     - packages/stories_editor/assets/icons/arrow.png
+    - packages/stories_editor/assets/icons/crop.png
     - packages/stories_editor/assets/icons/brush.png
     - packages/stories_editor/assets/icons/check.png
     - packages/stories_editor/assets/icons/circular_gradient.png

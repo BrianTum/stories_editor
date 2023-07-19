@@ -20,12 +20,4 @@ class DraggableWidgetNotifier extends ChangeNotifier {
   setDefaults() {
     _draggableWidget = [];
   }
-
-  @override
-  void dispose() {
-    if (kDebugMode) {
-      print("draggable widget === disposed");
-    }
-    super.dispose();
-  }
 }

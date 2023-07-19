@@ -7,6 +7,8 @@ class EditableItem {
   /// delete
   bool deletePosition = false;
 
+  GlobalKey itemKey = GlobalKey();
+
   /// item position
   Offset position = const Offset(0.0, 0.0);
   Offset focalPoint = const Offset(0.0, 0.0);
@@ -28,6 +30,8 @@ class EditableItem {
   /// Gif
   GiphyGif gif = GiphyGif(id: '0');
 
-  ///
+  /// video
   VideoPlayerController? videoController;
+  double mediaHeight = 0.0;
+  double mediaWidth = 0.0;
 }

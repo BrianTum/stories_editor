@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_gif_picker/modal_gif_picker.dart';
@@ -127,10 +128,15 @@ Future<bool> exitDialog({required context, required contentKey}) async {
                           _widgetProvider.draggableWidget.isNotEmpty) {
                         /// save image
                         var response = await takePicture(
-                            contentKey: contentKey,
-                            context: context,
-                            saveToGallery: true);
-                        if (response) {
+                          contentKey: contentKey,
+                          // saveToGallery: true,
+                        );
+
+                        if (kDebugMode) {
+                          print("response == $response");
+                        }
+
+                        if (response != "false") {
                           _dispose(
                               context: context, message: 'Successfully saved');
                         } else {

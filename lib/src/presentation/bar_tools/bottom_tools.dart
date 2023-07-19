@@ -30,19 +30,7 @@ class BottomTools extends StatefulWidget {
 }
 
 class _BottomToolsState extends State<BottomTools> {
-  bool _isButton1Active = true;
-
-  void _handleButton1Pressed() {
-    setState(() {
-      _isButton1Active = true;
-    });
-  }
-
-  void _handleButton2Pressed() {
-    setState(() {
-      _isButton1Active = false;
-    });
-  }
+  int activeButton = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +39,13 @@ class _BottomToolsState extends State<BottomTools> {
       builder: (_, controlNotifier, scrollNotifier, itemNotifier, colorProvider,
           __) {
         return Container(
-          decoration: const BoxDecoration(color: Colors.transparent),
+          decoration: BoxDecoration(
+              color: controlNotifier
+                  .gradientColors![controlNotifier.gradientIndex].last
+                  .withOpacity(0.2)),
+          height: MediaQuery.of(context).size.height * 0.15,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 40.h),
+            padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 10.h),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -62,8 +54,10 @@ class _BottomToolsState extends State<BottomTools> {
                 Expanded(
                   flex: 1,
                   child: Container(
-                    alignment: Alignment.centerLeft,
+                    alignment: Alignment.center,
                     child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      width: double.infinity,
                       child: _preViewContainer(
                         /// if [model.imagePath] is null/empty return preview image
                         child: controlNotifier.mediaPath.isEmpty
@@ -71,8 +65,11 @@ class _BottomToolsState extends State<BottomTools> {
                                 borderRadius: BorderRadius.circular(8),
                                 child: GestureDetector(
                                   onTap: () {
+                                    controlNotifier.isTextEdit = false;
+
                                     /// scroll to gridView page
-                                    if (controlNotifier.mediaPath.isEmpty) {
+                                    if (mounted &&
+                                        controlNotifier.mediaPath.isEmpty) {
                                       scrollNotifier.pageController
                                           .animateToPage(1,
                                               duration: const Duration(
@@ -81,25 +78,36 @@ class _BottomToolsState extends State<BottomTools> {
                                     }
                                   },
                                   child: const CoverThumbnail(
-                                    thumbnailQuality: 150,
-                                  ),
-                                ))
+                                      thumbnailQuality: 200,
+                                      thumbnailFit: BoxFit.cover),
+                                ),
+                              )
 
                             /// return clear [imagePath] provider
                             : GestureDetector(
                                 onTap: () {
-                                  /// clear image url variable
-                                  print("clear");
-                                  itemNotifier
-                                      .draggableWidget.first.videoController!
-                                      .pause();
-                                  itemNotifier
-                                      .draggableWidget.first.videoController!
-                                      .dispose();
+                                  controlNotifier.isTextEdit = false;
 
+                                  /// clear image url variable
+
+                                  activeButton = 1;
                                   controlNotifier.mediaPath = '';
 
+                                  if (controlNotifier.videoPath != '') {
+                                    controlNotifier.videoPath = '';
+
+                                    itemNotifier
+                                        .draggableWidget.first.videoController!
+                                        .dispose();
+                                  }
+
                                   itemNotifier.draggableWidget.removeAt(0);
+
+                                  controlNotifier.clippersList!.clear();
+                                  controlNotifier.clippersList!
+                                      .addAll([0.0, 0.0, 0.0, 0.0]);
+
+                                  controlNotifier.isVideoTheme = true;
                                 },
                                 child: Container(
                                   height: 45,
@@ -122,7 +130,6 @@ class _BottomToolsState extends State<BottomTools> {
                 Expanded(
                   flex: 6,
                   child: Container(
-                    height: MediaQuery.of(context).size.height * 0.1,
                     color: Colors.white12,
                     child: Column(
                       children: [
@@ -134,23 +141,27 @@ class _BottomToolsState extends State<BottomTools> {
                                 Expanded(
                                   flex: 1,
                                   child: ElevatedButton(
-                                    onPressed: _handleButton1Pressed,
+                                    onPressed: () {
+                                      setState(() {
+                                        activeButton = 1;
+                                      });
+                                    },
                                     style: ButtonStyle(
                                       backgroundColor: MaterialStateProperty
                                           .resolveWith<Color>(
                                         (Set<MaterialState> states) {
-                                          if (_isButton1Active) {
+                                          if (activeButton == 1) {
                                             return controlNotifier
                                                 .gradientColors![controlNotifier
                                                     .gradientIndex]
                                                 .first
-                                                .withOpacity(0.7);
+                                                .withOpacity(0.9);
                                           } else {
                                             return controlNotifier
                                                 .gradientColors![controlNotifier
                                                     .gradientIndex]
                                                 .last
-                                                .withOpacity(0.3);
+                                                .withOpacity(0.5);
                                           }
                                         },
                                       ),
@@ -161,37 +172,44 @@ class _BottomToolsState extends State<BottomTools> {
                                 Expanded(
                                   flex: 1,
                                   child: ElevatedButton(
-                                    onPressed: _handleButton2Pressed,
+                                    onPressed: () {
+                                      setState(() {
+                                        activeButton = 2;
+                                      });
+                                    },
                                     style: ButtonStyle(
                                       backgroundColor: MaterialStateProperty
                                           .resolveWith<Color>(
                                         (Set<MaterialState> states) {
-                                          if (!_isButton1Active) {
+                                          if (activeButton == 2) {
                                             return controlNotifier
                                                 .gradientColors![controlNotifier
                                                     .gradientIndex]
                                                 .first
-                                                .withOpacity(0.7);
+                                                .withOpacity(0.9);
                                           } else {
                                             return controlNotifier
                                                 .gradientColors![controlNotifier
                                                     .gradientIndex]
                                                 .last
-                                                .withOpacity(0.3);
+                                                .withOpacity(0.5);
                                           }
                                         },
                                       ),
                                     ),
                                     child: const Text('Filters'),
                                   ),
-                                )
+                                ),
                               ],
                             )),
                         Expanded(
-                            flex: 5,
-                            child: _isButton1Active
-                                ? const Captioner()
-                                : const Filters()),
+                          flex: 5,
+                          child: activeButton == 1
+                              ? Captioner(
+                                  controlNotifier: controlNotifier,
+                                )
+                              : const Filters(),
+                        ),
                       ],
                     ),
                   ),

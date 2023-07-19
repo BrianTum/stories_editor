@@ -13,8 +13,6 @@ import 'package:stories_editor/src/domain/providers/notifiers/scroll_notifier.da
 import 'package:stories_editor/src/domain/providers/notifiers/text_editing_notifier.dart';
 import 'package:stories_editor/src/presentation/main_view/main_view.dart';
 
-import 'src/presentation/video_editor/video_editor.dart';
-
 export 'package:stories_editor/stories_editor.dart';
 
 class StoriesEditor extends StatefulWidget {
@@ -112,25 +110,19 @@ class _StoriesEditorState extends State<StoriesEditor> {
             ChangeNotifierProvider(create: (_) => PaintingNotifier()),
             ChangeNotifierProvider(create: (_) => TextEditingNotifier()),
           ],
-          child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            home: MainView(
-              giphyKey: widget.giphyKey,
-              onDone: widget.onDone,
-              fontFamilyList: widget.fontFamilyList,
-              isCustomFontList: widget.isCustomFontList,
-              middleBottomWidget: widget.middleBottomWidget,
-              gradientColors: widget.gradientColors,
-              colorList: widget.colorList,
-              onDoneButtonStyle: widget.onDoneButtonStyle,
-              onBackPress: widget.onBackPress,
-              editorBackgroundColor: widget.editorBackgroundColor,
-              galleryThumbnailQuality: widget.galleryThumbnailQuality,
-              mediaPath: widget.mediaPath,
-            ),
-            routes: {
-              '/videoEditor': (context) => const VideoEditor(),
-            },
+          child: MainView(
+            giphyKey: widget.giphyKey,
+            onDone: widget.onDone,
+            fontFamilyList: widget.fontFamilyList,
+            isCustomFontList: widget.isCustomFontList,
+            middleBottomWidget: widget.middleBottomWidget,
+            gradientColors: widget.gradientColors,
+            colorList: widget.colorList,
+            onDoneButtonStyle: widget.onDoneButtonStyle,
+            onBackPress: widget.onBackPress,
+            editorBackgroundColor: widget.editorBackgroundColor,
+            galleryThumbnailQuality: widget.galleryThumbnailQuality,
+            mediaPath: widget.mediaPath,
           ),
         ),
       ),

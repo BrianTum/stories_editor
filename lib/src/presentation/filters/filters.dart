@@ -12,8 +12,28 @@ class Filters extends StatefulWidget {
 }
 
 class _FiltersState extends State<Filters> {
-  int selectedIndex = 0;
+  late int selectedIndex;
   final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    selectedIndex =
+        Provider.of<ControlNotifier>(context, listen: false).filterIndex;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToSelectedIndex();
+    });
+
+    super.initState();
+  }
+
+  void _scrollToSelectedIndex() {
+    _scrollController.animateTo(
+      selectedIndex * 100.0, // Replace with your desired item extent
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    );
+  }
 
   @override
   void dispose() {
@@ -74,8 +94,8 @@ class _FiltersState extends State<Filters> {
                         ColorFiltered(
                           child: Image.asset(
                               'assets/images/img.png'), // Replace with your own image widget
-                          colorFilter: ColorFilters.getColorFilter(
-                              FilterType.values[index])!,
+                          colorFilter: CustomColorFilters.getFilter(
+                              FilterType.values[index]),
                         ),
                         selectedIndex == index
                             ? const Positioned(

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:align_positioned/align_positioned.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modal_gif_picker/modal_gif_picker.dart';
@@ -16,6 +15,7 @@ import 'package:stories_editor/src/presentation/utils/constants/app_enums.dart';
 import 'package:stories_editor/src/presentation/widgets/animated_onTap_button.dart';
 import 'package:stories_editor/src/presentation/widgets/file_image_bg.dart';
 
+import '../widgets/file_video_bg.dart';
 
 class DraggableWidget extends StatelessWidget {
   final EditableItem draggableWidget;
@@ -23,6 +23,7 @@ class DraggableWidget extends StatelessWidget {
   final Function(PointerUpEvent)? onPointerUp;
   final Function(PointerMoveEvent)? onPointerMove;
   final BuildContext context;
+  final GlobalKey contentKey;
   const DraggableWidget({
     Key? key,
     required this.context,
@@ -30,6 +31,7 @@ class DraggableWidget extends StatelessWidget {
     this.onPointerDown,
     this.onPointerUp,
     this.onPointerMove,
+    required this.contentKey,
   }) : super(key: key);
 
   @override
@@ -97,13 +99,18 @@ class DraggableWidget extends StatelessWidget {
       case ItemType.image:
         if (_controlProvider.mediaPath.isNotEmpty) {
           overlayWidget = SizedBox(
-            width: screenUtil.screenWidth - 144.w,
             child: FileImageBG(
               filePath: File(_controlProvider.mediaPath),
-              generatedGradient: (color1, color2) {
+              generatedGradient:
+                  (color1, color2, color3, color4, color5, color6) {
                 _colorProvider.color1 = color1;
                 _colorProvider.color2 = color2;
+                _colorProvider.color3 = color3;
+                _colorProvider.color4 = color4;
+                _colorProvider.color5 = color5;
+                _colorProvider.color6 = color6;
               },
+              contentKey: contentKey,
             ),
           );
         } else {
@@ -138,18 +145,20 @@ class DraggableWidget extends StatelessWidget {
       /// video [file_video_gb.dart]
       case ItemType.video:
         if (_controlProvider.mediaPath.isNotEmpty) {
-          if (kDebugMode) {
-            print("video path == ${_controlProvider.videoPath}");
-          }
           overlayWidget = SizedBox(
-            width: screenUtil.screenWidth - 144.w,
             child: FileVideoBG(
-              filePath: File(_controlProvider.mediaPath),
+              filePath: _controlProvider.mediaPath,
               videoPath: _controlProvider.videoPath,
-              generatedGradient: (color1, color2) {
+              generatedGradient:
+                  (color1, color2, color3, color4, color5, color6) {
                 _colorProvider.color1 = color1;
                 _colorProvider.color2 = color2;
+                _colorProvider.color3 = color3;
+                _colorProvider.color4 = color4;
+                _colorProvider.color5 = color5;
+                _colorProvider.color6 = color6;
               },
+              contentKey: contentKey,
             ),
           );
         } else {
