@@ -45,8 +45,6 @@ class _ExampleState extends State<Example> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => StoriesEditor(
-                          mediaPath:
-                              "/storage/emulated/0/Download/The Problem With Kenya's Economy Is Stealing- Dr. Jim McFie.mp4",
                           //fontFamilyList: const ['Shizuru', 'Aladin'],
                           galleryThumbnailQuality: 300,
                           //isCustomFontList: true,
