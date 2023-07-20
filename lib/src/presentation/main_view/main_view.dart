@@ -106,7 +106,7 @@ class _MainViewState extends State<MainView> {
   bool _isDeletePosition = false;
   bool _inAction = false;
 
-  bool _processing = true;
+  bool _processing = false;
 
   @override
   void initState() {
@@ -120,6 +120,7 @@ class _MainViewState extends State<MainView> {
       // _control.middleBottomWidget = widget.middleBottomWidget;
       // _control.isCustomFontList = widget.isCustomFontList ?? false;
       if (widget.mediaPath != null) {
+        _processing = true;
         String mimeStr = lookupMimeType(widget.mediaPath!)!;
         var fileType = mimeStr.split('/');
         if (fileType[0] == "image") {
