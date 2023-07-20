@@ -221,7 +221,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "39e9c92ed0bbcd242a01fbbe730a5d0220941494"
+      resolved-ref: "7651714f7d297c8f31bb08294811b0362071079d"
       url: "https://github.com/Picmoni/gallery_media_picker.git"
     source: git
     version: "0.1.0"
@@ -410,7 +410,7 @@ packages:
     source: hosted
     version: "2.1.7"
   percent_indicator:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: percent_indicator
       sha256: c37099ad833a883c9d71782321cb65c3a848c21b6939b6185f0ff6640d05814c

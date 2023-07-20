@@ -8,6 +8,7 @@ import 'package:ffmpeg_kit_flutter_min_gpl/statistics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 import '../widgets/export_result.dart';
 
@@ -35,10 +36,10 @@ Future<void> generateGradientVideo(
       '-loop 1 -i "$background" -i "$videoPath" -filter_complex "[0:v]$filter, scale=396:704[bg];[1:v]$filter, scale=$mediaWidth:$mediaHeight, setsar=1, rotate=$rotation:c=none:ow=rotw($rotation):oh=roth($rotation), format=rgba, unsharp=5:5:0.1:3:3:0.0[v1];[bg][v1]overlay=x=$overlayX:y=$overlayY:enable=\'between(t,0,$duration)\'" -c:a copy -t $duration $outputPath';
 
   // Execute the FFmpeg command
-  ffmpegExecute(ffmpegCommand, outputPath, caption, context);
+  ffmpegExecute(ffmpegCommand, outputPath, caption, duration, context);
 }
 
-ffmpegExecute(String command, String outputPath, String caption,
+ffmpegExecute(String command, String outputPath, String caption, duration,
     BuildContext context) async {
   if (kDebugMode) {
     print("execute");
@@ -64,14 +65,56 @@ ffmpegExecute(String command, String outputPath, String caption,
       // ERROR
     }
   }, (Log log) {
-    if (kDebugMode) {
-      print("log == ${log.getMessage()}");
-    }
     // CALLED WHEN SESSION PRINTS LOGS
   }, (Statistics statistics) {
     // CALLED WHEN SESSION GENERATES STATISTICS
-    if (kDebugMode) {
-      print("log == ${statistics.getTime()}");
+    var percentage = ((statistics.getTime() / (duration * 1000)));
+
+    if (percentage > 0 && percentage < 1) {
+      showDialog(
+        context: context,
+        builder: (_) => Center(
+          child: SizedBox(
+            height: 400,
+            width: 300,
+            child: AlertDialog(
+              backgroundColor: Colors.white60,
+              content: Center(
+                child: Column(
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: CircularPercentIndicator(
+                        radius: 45.0,
+                        lineWidth: 4.0,
+                        percent: percentage,
+                        center: Text("${(percentage * 100).ceil()}%"),
+                        progressColor: Colors.orange,
+                      ),
+                    ),
+                    Expanded(
+                        child: Center(
+                      child: GestureDetector(
+                          onLongPress: () {},
+                          child: Container(
+                            color: Colors.blue,
+                          )),
+                    )),
+                    const Expanded(
+                      child: Center(
+                        child: Text(
+                          "Processing",
+                          style: TextStyle(color: Colors.black, fontSize: 30),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
     }
   });
 }

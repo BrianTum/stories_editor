@@ -41,11 +41,12 @@ class _ExampleState extends State<Example> {
         body: Center(
           child: ElevatedButton(
             onPressed: () async {
-              Map returnedMap = await Navigator.push(
+              Map? returnedMap = await Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => StoriesEditor(
-                          giphyKey: 'C4dMA7Q19nqEGdpfj82T8ssbOeZIylD4',
+                          mediaPath:
+                              "/storage/emulated/0/Download/The Problem With Kenya's Economy Is Stealing- Dr. Jim McFie.mp4",
                           //fontFamilyList: const ['Shizuru', 'Aladin'],
                           galleryThumbnailQuality: 300,
                           //isCustomFontList: true,
@@ -57,7 +58,7 @@ class _ExampleState extends State<Example> {
                         )),
               );
 
-              if (returnedMap['type'] == 'photo') {
+              if (returnedMap!['type'] == 'photo') {
                 showDialog(
                   context: context,
                   builder: (_) => Center(

@@ -67,13 +67,17 @@ class _CaptionerState extends State<Captioner> {
                   });
                 },
               )
-            : AutoSizeText(
-                _textEditingController.text,
-                style: const TextStyle(fontSize: 30),
-                minFontSize: 20,
-                stepGranularity: 10,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+            : Center(
+                child: AutoSizeText(
+                  _textEditingController.text == ''
+                      ? "Tap here to enter caption"
+                      : _textEditingController.text,
+                  style: const TextStyle(fontSize: 20),
+                  minFontSize: 20,
+                  stepGranularity: 10,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
       ),
     );

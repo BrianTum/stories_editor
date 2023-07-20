@@ -1,11 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:video_editor/video_editor.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 import '../../domain/providers/notifiers/control_provider.dart';
 import '../../domain/providers/notifiers/draggable_widget_notifier.dart';
+import '../widgets/animated_onTap_button.dart';
 import 'crop_page.dart';
 import 'export_service.dart';
 
@@ -108,28 +107,28 @@ class _VideoEditorState extends State<VideoEditor> {
     );
   }
 
-  void _exportCover() async {
-    final configCover = CoverFFmpegVideoEditorConfig(_controller);
-    final executeCover = await configCover.getExecuteConfig();
-    if (executeCover == null) {
-      _showErrorSnackBar("Error on cover exportation initialization.");
-      return;
-    }
+  // void _exportCover() async {
+  //   final configCover = CoverFFmpegVideoEditorConfig(_controller);
+  //   final executeCover = await configCover.getExecuteConfig();
+  //   if (executeCover == null) {
+  //     _showErrorSnackBar("Error on cover exportation initialization.");
+  //     return;
+  //   }
 
-    await ExportService.runFFmpegCommand(
-      executeCover,
-      onError: (e, s) => _showErrorSnackBar("Error on cover exportation :("),
-      onCompleted: (cover) {
-        if (!mounted) return;
+  //   await ExportService.runFFmpegCommand(
+  //     executeCover,
+  //     onError: (e, s) => _showErrorSnackBar("Error on cover exportation :("),
+  //     onCompleted: (cover) {
+  //       if (!mounted) return;
 
-        // widget.controlNotifier.mediaPath == cover.path;
-        // showDialog(
-        //   context: context,
-        //   builder: (_) => CoverResultPopup(cover: cover),
-        // );
-      },
-    );
-  }
+  //       // widget.controlNotifier.mediaPath == cover.path;
+  //       // showDialog(
+  //       //   context: context,
+  //       //   builder: (_) => CoverResultPopup(cover: cover),
+  //       // );
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -354,19 +353,36 @@ class _VideoEditorState extends State<VideoEditor> {
             ),
             const VerticalDivider(endIndent: 22, indent: 22),
             Expanded(
-              child: PopupMenuButton(
-                tooltip: 'Open export menu',
-                icon: const Icon(Icons.save),
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    onTap: _exportCover,
-                    child: const Text('Export cover'),
+              child: AnimatedOnTapButton(
+                onTap: () {
+                  _exportVideo();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Material(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(90),
+                    elevation: 1,
+                    shadowColor: Colors.white60,
+                    child: Container(
+                      height: 35,
+                      width: 60,
+                      decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.black, width: 2)),
+                      child: Transform.scale(
+                        scale: 0.8,
+                        child: const Center(
+                            child: Text(
+                          "Done",
+                          style: TextStyle(color: Colors.black, fontSize: 20),
+                        )),
+                      ),
+                    ),
                   ),
-                  PopupMenuItem(
-                    onTap: _exportVideo,
-                    child: const Text('Export video'),
-                  ),
-                ],
+                ),
               ),
             ),
           ],

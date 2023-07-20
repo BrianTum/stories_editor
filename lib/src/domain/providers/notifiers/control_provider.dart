@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:stories_editor/src/presentation/utils/constants/app_colors.dart';
 import 'package:stories_editor/src/presentation/utils/constants/font_family.dart';
 import 'package:video_editor/video_editor.dart';
-import 'package:video_player/video_player.dart';
 
 class ControlNotifier extends ChangeNotifier {
   String _giphyKey = '';
@@ -223,7 +222,7 @@ class ControlNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _textCaption = 'Tap here to enter caption';
+  String _textCaption = '';
   String get textCaption => _textCaption;
   set textCaption(String caption) {
     _textCaption = caption;

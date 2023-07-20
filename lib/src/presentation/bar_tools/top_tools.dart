@@ -12,14 +12,11 @@ import 'package:stories_editor/src/presentation/utils/constants/app_enums.dart';
 import 'package:stories_editor/src/presentation/utils/modal_sheets.dart';
 import 'package:stories_editor/src/presentation/widgets/animated_onTap_button.dart';
 import 'package:stories_editor/src/presentation/widgets/tool_button.dart';
-import 'package:video_player/video_player.dart';
-import '../../domain/models/editable_items.dart';
 import '../../domain/providers/notifiers/gradient_notifier.dart';
 import '../../domain/providers/notifiers/scroll_notifier.dart';
 import '../../domain/sevices/save_as_image.dart';
 import '../../domain/sevices/save_as_video.dart';
 import '../image_editor/crop.dart';
-import '../video_editor/video_editor.dart';
 
 class TopTools extends StatefulWidget {
   final GlobalKey contentKey;

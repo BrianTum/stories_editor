@@ -31,13 +31,6 @@ class ExportService {
         if (ReturnCode.isSuccess(code)) {
           onCompleted(File(execute.outputPath));
         } else {
-          var out = await session.getLogs();
-
-          for (var element in out) {
-            print(
-                "state $state and return code $code and output = ${element.getMessage()}.");
-          }
-
           if (onError != null) {
             onError(
               Exception(
