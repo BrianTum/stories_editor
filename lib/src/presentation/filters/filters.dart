@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -92,8 +94,13 @@ class _FiltersState extends State<Filters> {
                     child: Stack(
                       children: [
                         ColorFiltered(
-                          child: Image.asset(
-                              'assets/images/img.png'), // Replace with your own image widget
+                          child: controlNotifier.mediaPath != ''
+                              ? Image.file(
+                                  File(controlNotifier.mediaPath),
+                                  filterQuality: FilterQuality.high,
+                                )
+                              : Image.asset(
+                                  'assets/images/img.png'), // Replace with your own image widget
                           colorFilter: CustomColorFilters.getFilter(
                               FilterType.values[index]),
                         ),

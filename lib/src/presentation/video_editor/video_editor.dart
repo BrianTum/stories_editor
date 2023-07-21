@@ -74,35 +74,36 @@ class _VideoEditorState extends State<VideoEditor> {
           _showErrorSnackBar("Error on cover exportation :(");
         }
       },
-      onCompleted: (cover) {
+      onCompleted: (cover) async {
         if (_isDisposed) return;
 
         debugPrint("cover is ${cover.path}");
         coverPath = cover.path;
         widget.controlNotifier.mediaPath == cover.path;
-      },
-    );
 
-    await ExportService.runFFmpegCommand(
-      await config.getExecuteConfig(),
-      onProgress: (stats) {
-        if (!_isDisposed) {
-          _exportingProgress.value = config.getFFmpegProgress(stats.getTime());
-        }
-      },
-      onError: (e, s) {
-        if (!_isDisposed) {
-          _showErrorSnackBar("Error on export video :(");
-        }
-      },
-      onCompleted: (file) async {
-        debugPrint("file is ${file.path}");
+        await ExportService.runFFmpegCommand(
+          await config.getExecuteConfig(),
+          onProgress: (stats) {
+            if (!_isDisposed) {
+              _exportingProgress.value =
+                  config.getFFmpegProgress(stats.getTime());
+            }
+          },
+          onError: (e, s) {
+            if (!_isDisposed) {
+              _showErrorSnackBar("Error on export video :(");
+            }
+          },
+          onCompleted: (file) async {
+            debugPrint("file is ${file.path}");
 
-        if (_isDisposed) return;
+            if (_isDisposed) return;
 
-        _isExporting.value = false;
+            _isExporting.value = false;
 
-        Navigator.pop(context, [file.path, coverPath, _controller]);
+            Navigator.pop(context, [file.path, coverPath, _controller]);
+          },
+        );
       },
     );
   }
