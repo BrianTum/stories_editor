@@ -221,7 +221,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "6dece1e745c2e35f12a144112ea8894b5ce85771"
+      resolved-ref: "4ff7ef0d8e3dfd0f4ad94fd8755acb46f03ad23e"
       url: "https://github.com/Picmoni/gallery_media_picker.git"
     source: git
     version: "0.1.0"
