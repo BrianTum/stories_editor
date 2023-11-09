@@ -86,7 +86,7 @@ class _VideoEditorState extends State<VideoEditor> {
           onProgress: (stats) {
             if (!_isDisposed) {
               _exportingProgress.value =
-                  config.getFFmpegProgress(stats.getTime());
+                  config.getFFmpegProgress(stats.getTime().toInt());
             }
           },
           onError: (e, s) {
