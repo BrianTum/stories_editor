@@ -17,7 +17,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   share_plus: ^4.0.10+1
   permission_handler: ^10.0.0
-  ffmpeg_kit_flutter_min_gpl: ^5.1.0-LTS
+  ffmpeg_kit_flutter_min_gpl: 6.0.3
   path_provider: ^2.0.11
   percent_indicator: ^4.2.3
   stories_editor:
