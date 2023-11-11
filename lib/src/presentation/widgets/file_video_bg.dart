@@ -66,6 +66,7 @@ class _FileVideoBGState extends State<FileVideoBG> {
 
     Timer.periodic(const Duration(milliseconds: 500), (callback) async {
       if (imageKey.currentState!.context.size!.height == 0.0) {
+        debugPrint("height is 0 means not loaded yet");
       } else {
         itempItemProvider.draggableWidget.first.itemKey = imageKey;
         itempItemProvider.draggableWidget.first.mediaHeight =

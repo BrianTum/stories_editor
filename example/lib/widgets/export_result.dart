@@ -6,6 +6,8 @@ import 'package:fraction/fraction.dart';
 import 'package:path/path.dart' as path;
 import 'package:video_player/video_player.dart';
 
+import '../main.dart';
+
 Future<void> _getImageDimension(File file,
     {required Function(Size) onResult}) async {
   var decodedImage = await decodeImageFromList(file.readAsBytesSync());
@@ -27,7 +29,7 @@ class VideoResultPopup extends StatefulWidget {
 }
 
 class _VideoResultPopupState extends State<VideoResultPopup> {
-  VideoPlayerController? _controller;
+  VideoPlayerController? videoController;
   FileImage? _fileImage;
   Size _fileDimension = Size.zero;
   late final bool _isGif =
@@ -43,12 +45,12 @@ class _VideoResultPopupState extends State<VideoResultPopup> {
         onResult: (d) => setState(() => _fileDimension = d),
       );
     } else {
-      _controller = VideoPlayerController.file(widget.video);
-      _controller?.initialize().then((_) {
-        _fileDimension = _controller?.value.size ?? Size.zero;
+      videoController = VideoPlayerController.file(widget.video);
+      videoController?.initialize().then((_) {
+        _fileDimension = videoController?.value.size ?? Size.zero;
         setState(() {});
-        _controller?.play();
-        _controller?.setLooping(true);
+        videoController?.play();
+        videoController?.setLooping(true);
       });
     }
     _fileMbSize = _fileMBSize(widget.video);
@@ -59,45 +61,87 @@ class _VideoResultPopupState extends State<VideoResultPopup> {
     if (_isGif) {
       _fileImage?.evict();
     } else {
-      _controller?.pause();
-      _controller?.dispose();
+      videoController?.pause();
+      videoController?.dispose();
     }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(30),
-      child: Center(
-        child: Stack(
-          alignment: Alignment.bottomLeft,
-          children: [
-            AspectRatio(
-              aspectRatio: _fileDimension.aspectRatio == 0
-                  ? 1
-                  : _fileDimension.aspectRatio,
-              child:
-                  _isGif ? Image.file(widget.video) : VideoPlayer(_controller!),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Video Result'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              if (_isGif) {
+                return;
+              }
+              if (videoController!.value.isPlaying) {
+                videoController?.pause();
+              } else {
+                videoController?.play();
+              }
+            },
+            icon: Icon(
+              videoController!.value.isPlaying ? Icons.pause : Icons.play_arrow,
             ),
-            Positioned(
-              bottom: 0,
-              child: FileDescription(
-                description: {
-                  'Video path': widget.video.path,
-                  if (!_isGif)
-                    'Video duration':
-                        '${((_controller?.value.duration.inMilliseconds ?? 0) / 1000).toStringAsFixed(2)}s',
-                  'Video ratio': Fraction.fromDouble(_fileDimension.aspectRatio)
-                      .reduce()
-                      .toString(),
-                  'Video dimension': _fileDimension.toString(),
-                  'Video size': _fileMbSize,
-                  'Caption': widget.caption
+          ),
+          IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => const Example()));
+              },
+              icon: const Icon(Icons.close))
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(30),
+        child: Center(
+          child: Stack(
+            alignment: Alignment.bottomLeft,
+            children: [
+              GestureDetector(
+                onDoubleTap: () {
+                  if (_isGif) {
+                    return;
+                  }
+                  if (videoController!.value.isPlaying) {
+                    videoController?.pause();
+                  } else {
+                    videoController?.play();
+                  }
                 },
+                child: AspectRatio(
+                  aspectRatio: _fileDimension.aspectRatio == 0
+                      ? 1
+                      : _fileDimension.aspectRatio,
+                  child: _isGif
+                      ? Image.file(widget.video)
+                      : VideoPlayer(videoController!),
+                ),
               ),
-            ),
-          ],
+              Positioned(
+                bottom: 0,
+                child: FileDescription(
+                  description: {
+                    'Video path': widget.video.path,
+                    if (!_isGif)
+                      'Video duration':
+                          '${((videoController?.value.duration.inMilliseconds ?? 0) / 1000).toStringAsFixed(2)}s',
+                    'Video ratio':
+                        Fraction.fromDouble(_fileDimension.aspectRatio)
+                            .reduce()
+                            .toString(),
+                    'Video dimension': _fileDimension.toString(),
+                    'Video size': _fileMbSize,
+                    'Caption': widget.caption
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

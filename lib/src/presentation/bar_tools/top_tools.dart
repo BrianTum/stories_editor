@@ -12,6 +12,7 @@ import 'package:stories_editor/src/presentation/utils/constants/app_enums.dart';
 import 'package:stories_editor/src/presentation/utils/modal_sheets.dart';
 import 'package:stories_editor/src/presentation/widgets/animated_onTap_button.dart';
 import 'package:stories_editor/src/presentation/widgets/tool_button.dart';
+import '../../domain/models/video_dimensions_list.dart';
 import '../../domain/providers/notifiers/gradient_notifier.dart';
 import '../../domain/providers/notifiers/scroll_notifier.dart';
 import '../../domain/sevices/save_as_image.dart';
@@ -143,6 +144,23 @@ class _TopToolsState extends State<TopTools> {
                       } else if (itemProvider.draggableWidget.isNotEmpty &&
                           itemProvider.draggableWidget.first.type ==
                               ItemType.video) {
+                        debugPrint(
+                            "video file size  = ${(File(controlNotifier.videoPath).lengthSync() / (1024 * 1024)).toStringAsFixed(1)} MB");
+
+                        Map<int, int> inputMap = {
+                          itemProvider.draggableWidget.first.videoController!
+                                  .value.size.width
+                                  .toInt():
+                              itemProvider.draggableWidget.first
+                                  .videoController!.value.size.height
+                                  .toInt()
+                        }; // Replace this with your desired map {x: y}
+
+                        Map<int, int>? selectedPair =
+                            selectSuitableKeyValuePair(
+                                inputMap, deviceDimensionsList);
+                        debugPrint("Selected Pair: $selectedPair");
+                        return;
                       } else {
                         return;
                       }
@@ -257,6 +275,51 @@ class _TopToolsState extends State<TopTools> {
         );
       },
     );
+  }
+
+  Map<int, int>? selectSuitableKeyValuePair(
+      Map<int, int> inputMap, List<Map<int, int>> keyValuePairs) {
+    // Sorting the list based on keys in ascending order
+    keyValuePairs.sort((a, b) => a.keys.first.compareTo(b.keys.first));
+
+    int x = inputMap.keys.first;
+    int y = inputMap.values.first;
+
+    Map<int, int>? result;
+
+    if (x > y) {
+      // Filter the pairs where the key is closest to x
+      int minDiffKey = double.maxFinite.toInt();
+      for (var pair in keyValuePairs) {
+        int diffKey = (pair.keys.first - x).abs();
+        if (diffKey < minDiffKey) {
+          minDiffKey = diffKey;
+          result = pair;
+        }
+      }
+    } else if (y > x) {
+      // Filter the pairs where the value is closest to y
+      int minDiffValue = double.maxFinite.toInt();
+      for (var pair in keyValuePairs) {
+        int diffValue = (pair.values.first - y).abs();
+        if (diffValue < minDiffValue) {
+          minDiffValue = diffValue;
+          result = pair;
+        }
+      }
+    } else {
+      // Filter the pairs with keys closest to x
+      int minDiffKey = double.maxFinite.toInt();
+      for (var pair in keyValuePairs) {
+        int diffKey = (pair.keys.first - x).abs();
+        if (diffKey < minDiffKey) {
+          minDiffKey = diffKey;
+          result = pair;
+        }
+      }
+    }
+
+    return result;
   }
 
   /// gradient color selector

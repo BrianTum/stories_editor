@@ -15,6 +15,7 @@ import 'package:path_provider/path_provider.dart';
 import '../../presentation/filters/model.dart';
 // import '../../presentation/utils/constants/app_enums.dart';
 import '../../presentation/video_editor/widgets/export_result.dart';
+import '../models/video_dimensions_list.dart';
 import '../providers/notifiers/control_provider.dart';
 import '../providers/notifiers/draggable_widget_notifier.dart';
 import '../providers/notifiers/gradient_notifier.dart';
@@ -63,6 +64,9 @@ Future<Map<String, Object>> saveVideo(
   var widthRaw = itemProvider.draggableWidget.first.mediaWidth *
       itemProvider.draggableWidget.first.scale;
 
+  debugPrint(
+      "width raw $widthRaw and height raw $heightRaw aspect ratio is ${widthRaw / heightRaw}");
+
   var width = roundToNearestEven(widthRaw);
 
   RenderBox parentBox =
@@ -81,10 +85,80 @@ Future<Map<String, Object>> saveVideo(
   double lengths = widthRaw; // Length of the rectangle
   double widths = -heightRaw; // Width of the rectangle
 
+  debugPrint("a is $a b is $b lengths $lengths and widths is $widths");
+
   List<Offset> rotatedCorners =
       getRotatedCornerOffsets(a, b, lengths, widths, rotation);
 
   Offset minOffset = getMinOffset(rotatedCorners);
+
+  double originalWidth = 396;
+  double originalHeight = 704;
+
+  debugPrint(
+      "input video aspect ratio is ${itemProvider.draggableWidget.first.videoController!.value.aspectRatio}");
+
+  var inputAspectRatio =
+      itemProvider.draggableWidget.first.videoController!.value.aspectRatio;
+  var scalingRatio = itemProvider.draggableWidget.first.scale;
+
+  var extraScaling = 1.0;
+
+  if (widthRaw < originalWidth && heightRaw < originalHeight) {
+    if (lengths > widths) {
+      extraScaling = lengths / originalWidth;
+    } else {
+      extraScaling = widths / originalHeight;
+    }
+  }
+
+  Map<int, int> inputMap = {
+    itemProvider.draggableWidget.first.videoController!.value.size.width
+            .toInt():
+        itemProvider.draggableWidget.first.videoController!.value.size.height
+            .toInt()
+  };
+
+  Map<int, int>? selectedPair =
+      selectSuitableKeyValuePair(inputMap, deviceDimensionsList);
+
+  debugPrint("input maps $inputMap : Selected Pair: $selectedPair");
+
+  // New view dimensions
+  double newWidth = selectedPair!.keys.first.toDouble();
+  double newHeight = selectedPair.values.first.toDouble();
+
+  var pX = (minOffset.dx / originalWidth) * newWidth;
+  var pY = (minOffset.dy / originalHeight) * newHeight;
+
+  var finalVideoWidth = 0.0;
+  var finalVideoHeight = 0.0;
+
+  if (inputMap.keys.first > inputMap.values.first) {
+    if (rotation == 0.0) {
+      finalVideoWidth = newWidth * scalingRatio * extraScaling;
+      finalVideoHeight = finalVideoWidth / inputAspectRatio;
+    } else {
+      finalVideoWidth = newWidth * extraScaling;
+      finalVideoHeight = finalVideoWidth / inputAspectRatio;
+    }
+  } else {
+    if (rotation == 0.0) {
+      finalVideoHeight = newHeight * scalingRatio * extraScaling;
+      finalVideoWidth = finalVideoHeight * inputAspectRatio;
+    } else {
+      finalVideoHeight = newHeight * extraScaling;
+      finalVideoWidth = finalVideoHeight * inputAspectRatio;
+    }
+  }
+
+  debugPrint(
+      "final video width params are : ${inputMap.keys.first} : $scalingRatio : $extraScaling}");
+  debugPrint(
+      "final video height params are : ${inputMap.values.first} : $scalingRatio : $extraScaling}");
+
+  debugPrint(
+      "final video width $finalVideoWidth : final video height $finalVideoHeight and aspect ratio ${finalVideoWidth / finalVideoHeight}");
 
   var data = {
     'type': "video",
@@ -92,13 +166,15 @@ Future<Map<String, Object>> saveVideo(
     'videoPath': controlNotifier.videoPath,
     'filterString': filterString,
     'duration': duration,
-    'height': height,
-    'width': width,
+    'frameWidth': selectedPair.keys.first,
+    'frameHeight': selectedPair.values.first,
+    'videoHeight': finalVideoHeight,
+    'videoWidth': finalVideoWidth,
     'centerX': centerX,
     'centerY': centerY,
     'rotation': rotation,
-    'minOffsetDx': minOffset.dx,
-    'minOffsetDy': minOffset.dy,
+    'minOffsetDx': pX,
+    'minOffsetDy': pY,
     'context': context,
     'caption': controlNotifier.textCaption
   };
@@ -118,6 +194,51 @@ Future<Map<String, Object>> saveVideo(
   //     minOffset.dx,
   //     minOffset.dy,
   //     context);
+}
+
+Map<int, int>? selectSuitableKeyValuePair(
+    Map<int, int> inputMap, List<Map<int, int>> keyValuePairs) {
+  // Sorting the list based on keys in ascending order
+  keyValuePairs.sort((a, b) => a.keys.first.compareTo(b.keys.first));
+
+  int x = inputMap.keys.first;
+  int y = inputMap.values.first;
+
+  Map<int, int>? result;
+
+  if (x > y) {
+    // Filter the pairs where the key is closest to x
+    int minDiffKey = double.maxFinite.toInt();
+    for (var pair in keyValuePairs) {
+      int diffKey = (pair.keys.first - x).abs();
+      if (diffKey < minDiffKey) {
+        minDiffKey = diffKey;
+        result = pair;
+      }
+    }
+  } else if (y > x) {
+    // Filter the pairs where the value is closest to y
+    int minDiffValue = double.maxFinite.toInt();
+    for (var pair in keyValuePairs) {
+      int diffValue = (pair.values.first - y).abs();
+      if (diffValue < minDiffValue) {
+        minDiffValue = diffValue;
+        result = pair;
+      }
+    }
+  } else {
+    // Filter the pairs with keys closest to x
+    int minDiffKey = double.maxFinite.toInt();
+    for (var pair in keyValuePairs) {
+      int diffKey = (pair.keys.first - x).abs();
+      if (diffKey < minDiffKey) {
+        minDiffKey = diffKey;
+        result = pair;
+      }
+    }
+  }
+
+  return result;
 }
 
 Offset getMinOffset(List<Offset> offsets) {

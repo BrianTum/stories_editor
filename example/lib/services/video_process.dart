@@ -17,6 +17,8 @@ Future<void> generateGradientVideo(
     String videoPath,
     String filter,
     int duration,
+    frameWidth,
+    frameHeight,
     mediaHeight,
     mediaWidth,
     centerX,
@@ -33,7 +35,10 @@ Future<void> generateGradientVideo(
   String outputPath = '$dir/stories_creator_$timestamp.mp4';
 
   String ffmpegCommand =
-      '-loop 1 -i "$background" -i "$videoPath" -filter_complex "[0:v]$filter, scale=396:704[bg];[1:v]$filter, scale=$mediaWidth:$mediaHeight, setsar=1, rotate=$rotation:c=none:ow=rotw($rotation):oh=roth($rotation), format=rgba, unsharp=5:5:0.1:3:3:0.0[v1];[bg][v1]overlay=x=$overlayX:y=$overlayY:enable=\'between(t,0,$duration)\'" -c:a copy -t $duration $outputPath';
+      '-loop 1 -i "$background" -i "$videoPath" -filter_complex "[0:v]$filter, scale=$frameWidth:$frameHeight[bg];[1:v]$filter, scale=$mediaWidth:$mediaHeight, setsar=1, rotate=$rotation:c=none:ow=rotw($rotation):oh=roth($rotation), format=rgba, unsharp=5:5:0.1:3:3:0.0[v1];[bg][v1]overlay=x=$overlayX:y=$overlayY:enable=\'between(t,0,$duration)\', scale=$frameWidth:$frameHeight[vout]" -map "[vout]" -map 1:a -c:v libx264 -b:v 2000k -c:a aac -strict experimental -t $duration -pix_fmt yuva420p $outputPath';
+
+  // String ffmpegCommand =
+  //     '-loop 1 -i "$background" -i "$videoPath" -filter_complex "[0:v]$filter, scale=$frameWidth:$frameHeight[bg];[1:v]$filter, scale=$mediaWidth:$mediaHeight, setsar=1, rotate=$rotation:c=none:ow=rotw($rotation):oh=roth($rotation)[v1];[bg][v1]overlay=x=$overlayX:y=$overlayY:enable=\'between(t,0,$duration)\', scale=$frameWidth:$frameHeight" -c:a copy -t $duration $outputPath';
 
   // Execute the FFmpeg command
   ffmpegExecute(ffmpegCommand, outputPath, caption, duration, context);
@@ -54,11 +59,21 @@ ffmpegExecute(String command, String outputPath, String caption, duration,
       if (kDebugMode) {
         print("success");
       }
-      showDialog(
-        context: context,
-        builder: (_) =>
-            VideoResultPopup(video: File(outputPath), caption: caption),
+      //navigate to VideoResultPopup
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => VideoResultPopup(
+                  video: File(outputPath),
+                  caption: caption,
+                )),
       );
+
+      // showDialog(
+      //   context: context,
+      //   builder: (_) =>
+      //       VideoResultPopup(video: File(outputPath), caption: caption),
+      // );
     } else if (ReturnCode.isCancel(returnCode)) {
       // CANCEL
     } else {

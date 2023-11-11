@@ -352,190 +352,182 @@ class _MainViewState extends State<MainView> {
                                       alignment: Alignment.topCenter,
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(25),
-                                        child: Center(
-                                          child: SizedBox(
-                                            width: 396,
-                                            height: 704,
-                                            child: RepaintBoundary(
-                                              key: contentKey,
-                                              child: ColorFiltered(
-                                                colorFilter: CustomColorFilters
-                                                    .getFilter(
-                                                        FilterType.values[
-                                                            controlNotifier
-                                                                .filterIndex]),
-                                                child: AnimatedContainer(
-                                                  duration: const Duration(
-                                                      milliseconds: 200),
-                                                  decoration: BoxDecoration(
-                                                    gradient: controlNotifier
-                                                            .mediaPath.isEmpty
-                                                        ? LinearGradient(
-                                                            colors: controlNotifier
-                                                                    .gradientColors![
-                                                                controlNotifier
-                                                                    .gradientIndex],
-                                                            begin: Alignment
-                                                                .topLeft,
-                                                            end: Alignment
-                                                                .bottomRight,
-                                                          )
-                                                        : controlNotifier
-                                                                    .isVideoTheme ==
-                                                                false
-                                                            ? LinearGradient(
-                                                                colors: controlNotifier
-                                                                        .gradientColors![
-                                                                    controlNotifier
-                                                                        .gradientIndex],
-                                                                begin: Alignment
-                                                                    .topLeft,
-                                                                end: Alignment
-                                                                    .bottomRight,
-                                                              )
-                                                            : LinearGradient(
-                                                                colors: [
-                                                                  colorProvider
-                                                                      .color1,
-                                                                  colorProvider
-                                                                      .color2,
-                                                                  colorProvider
-                                                                      .color3,
-                                                                  colorProvider
-                                                                      .color4,
-                                                                  colorProvider
-                                                                      .color5,
-                                                                  colorProvider
-                                                                      .color6,
-                                                                ],
-                                                                begin: Alignment
-                                                                    .topCenter,
-                                                                end: Alignment
-                                                                    .bottomCenter,
-                                                              ),
-                                                  ),
-                                                  child: GestureDetector(
-                                                    onScaleStart: (details) {
-                                                      controlNotifier
-                                                              .isScaling =
-                                                          !controlNotifier
-                                                              .isScaling;
-                                                      _onScaleStart(details);
-                                                    },
-                                                    onScaleUpdate: (details) {
-                                                      _onScaleUpdate(details);
-                                                    },
-                                                    onScaleEnd: (details) {
-                                                      controlNotifier
-                                                              .isScaling =
-                                                          !controlNotifier
-                                                              .isScaling;
-                                                      _onScaleEnded(details);
-                                                    },
-                                                    child: Stack(
-                                                      alignment:
-                                                          Alignment.center,
-                                                      children: [
-                                                        /// in this case photo view works as a main background container to manage
-                                                        /// the gestures of all movable items.
-                                                        PhotoView.customChild(
-                                                          child: Container(),
-                                                          backgroundDecoration:
-                                                              BoxDecoration(
-                                                            color: Colors
-                                                                .transparent,
-                                                            border: Border.all(
-                                                              color: Colors
-                                                                  .white, // Set the color of the border
-                                                              width:
-                                                                  .0, // Set the width of the border
+                                        child: SizedBox(
+                                          width: 396,
+                                          height: 704,
+                                          child: RepaintBoundary(
+                                            key: contentKey,
+                                            child: ColorFiltered(
+                                              colorFilter:
+                                                  CustomColorFilters.getFilter(
+                                                      FilterType.values[
+                                                          controlNotifier
+                                                              .filterIndex]),
+                                              child: AnimatedContainer(
+                                                duration: const Duration(
+                                                    milliseconds: 200),
+                                                decoration: BoxDecoration(
+                                                  gradient: controlNotifier
+                                                          .mediaPath.isEmpty
+                                                      ? LinearGradient(
+                                                          colors: controlNotifier
+                                                                  .gradientColors![
+                                                              controlNotifier
+                                                                  .gradientIndex],
+                                                          begin:
+                                                              Alignment.topLeft,
+                                                          end: Alignment
+                                                              .bottomRight,
+                                                        )
+                                                      : controlNotifier
+                                                                  .isVideoTheme ==
+                                                              false
+                                                          ? LinearGradient(
+                                                              colors: controlNotifier
+                                                                      .gradientColors![
+                                                                  controlNotifier
+                                                                      .gradientIndex],
+                                                              begin: Alignment
+                                                                  .topLeft,
+                                                              end: Alignment
+                                                                  .bottomRight,
+                                                            )
+                                                          : LinearGradient(
+                                                              colors: [
+                                                                colorProvider
+                                                                    .color1,
+                                                                colorProvider
+                                                                    .color2,
+                                                                colorProvider
+                                                                    .color3,
+                                                                colorProvider
+                                                                    .color4,
+                                                                colorProvider
+                                                                    .color5,
+                                                                colorProvider
+                                                                    .color6,
+                                                              ],
+                                                              begin: Alignment
+                                                                  .topCenter,
+                                                              end: Alignment
+                                                                  .bottomCenter,
                                                             ),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        12.0), // Set the border radius
+                                                ),
+                                                child: GestureDetector(
+                                                  onScaleStart: (details) {
+                                                    controlNotifier.isScaling =
+                                                        !controlNotifier
+                                                            .isScaling;
+                                                    _onScaleStart(details);
+                                                  },
+                                                  onScaleUpdate: (details) {
+                                                    _onScaleUpdate(details);
+                                                  },
+                                                  onScaleEnd: (details) {
+                                                    controlNotifier.isScaling =
+                                                        !controlNotifier
+                                                            .isScaling;
+                                                    _onScaleEnded(details);
+                                                  },
+                                                  child: Stack(
+                                                    alignment: Alignment.center,
+                                                    children: [
+                                                      /// in this case photo view works as a main background container to manage
+                                                      /// the gestures of all movable items.
+                                                      PhotoView.customChild(
+                                                        child: Container(),
+                                                        backgroundDecoration:
+                                                            BoxDecoration(
+                                                          color: Colors
+                                                              .transparent,
+                                                          border: Border.all(
+                                                            color: Colors
+                                                                .white, // Set the color of the border
+                                                            width:
+                                                                .0, // Set the width of the border
                                                           ),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                  12.0), // Set the border radius
                                                         ),
+                                                      ),
 
-                                                        ///list items
-                                                        ...itemProvider
-                                                            .draggableWidget
-                                                            .map(
-                                                                (editableItem) {
-                                                          return DraggableWidget(
-                                                            context: context,
-                                                            draggableWidget:
-                                                                editableItem,
-                                                            onPointerDown:
-                                                                (details) {
-                                                              _updateItemPosition(
-                                                                editableItem,
-                                                                details,
-                                                              );
-                                                            },
-                                                            onPointerUp:
-                                                                (details) {
-                                                              _deleteItemOnCoordinates(
-                                                                editableItem,
-                                                                details,
-                                                              );
-                                                            },
-                                                            onPointerMove:
-                                                                (details) {
-                                                              _deletePosition(
-                                                                editableItem,
-                                                                details,
-                                                              );
-                                                            },
-                                                            contentKey:
-                                                                contentKey,
-                                                          );
-                                                        }),
+                                                      ///list items
+                                                      ...itemProvider
+                                                          .draggableWidget
+                                                          .map((editableItem) {
+                                                        return DraggableWidget(
+                                                          context: context,
+                                                          draggableWidget:
+                                                              editableItem,
+                                                          onPointerDown:
+                                                              (details) {
+                                                            _updateItemPosition(
+                                                              editableItem,
+                                                              details,
+                                                            );
+                                                          },
+                                                          onPointerUp:
+                                                              (details) {
+                                                            _deleteItemOnCoordinates(
+                                                              editableItem,
+                                                              details,
+                                                            );
+                                                          },
+                                                          onPointerMove:
+                                                              (details) {
+                                                            _deletePosition(
+                                                              editableItem,
+                                                              details,
+                                                            );
+                                                          },
+                                                          contentKey:
+                                                              contentKey,
+                                                        );
+                                                      }),
 
-                                                        /// finger paint
-                                                        IgnorePointer(
-                                                          ignoring: true,
-                                                          child: Align(
-                                                            alignment: Alignment
-                                                                .topCenter,
-                                                            child: Container(
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            25),
-                                                              ),
-                                                              child:
-                                                                  RepaintBoundary(
-                                                                child: SizedBox(
-                                                                  width: screenUtil
-                                                                      .screenWidth,
-                                                                  child: StreamBuilder<
-                                                                      List<
-                                                                          PaintingModel>>(
-                                                                    stream: paintingProvider
-                                                                        .linesStreamController
-                                                                        .stream,
-                                                                    builder:
-                                                                        (context,
-                                                                            snapshot) {
-                                                                      return CustomPaint(
-                                                                        painter:
-                                                                            Sketcher(
-                                                                          lines:
-                                                                              paintingProvider.lines,
-                                                                        ),
-                                                                      );
-                                                                    },
-                                                                  ),
+                                                      /// finger paint
+                                                      IgnorePointer(
+                                                        ignoring: true,
+                                                        child: Align(
+                                                          alignment: Alignment
+                                                              .topCenter,
+                                                          child: Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          25),
+                                                            ),
+                                                            child:
+                                                                RepaintBoundary(
+                                                              child: SizedBox(
+                                                                width: screenUtil
+                                                                    .screenWidth,
+                                                                child: StreamBuilder<
+                                                                    List<
+                                                                        PaintingModel>>(
+                                                                  stream: paintingProvider
+                                                                      .linesStreamController
+                                                                      .stream,
+                                                                  builder: (context,
+                                                                      snapshot) {
+                                                                    return CustomPaint(
+                                                                      painter:
+                                                                          Sketcher(
+                                                                        lines: paintingProvider
+                                                                            .lines,
+                                                                      ),
+                                                                    );
+                                                                  },
                                                                 ),
                                                               ),
                                                             ),
                                                           ),
                                                         ),
-                                                      ],
-                                                    ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
                                               ),
