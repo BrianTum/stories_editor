@@ -104,7 +104,7 @@ Future<Map<String, Object>> saveVideo(
 
   var extraScaling = 1.0;
 
-  if (widthRaw < originalWidth && heightRaw < originalHeight) {
+  if (widthRaw < originalWidth || heightRaw < originalHeight) {
     if (lengths > widths) {
       extraScaling = lengths / originalWidth;
     } else {
@@ -144,11 +144,14 @@ Future<Map<String, Object>> saveVideo(
     }
   } else {
     if (rotation == 0.0) {
-      finalVideoHeight = newHeight * scalingRatio * extraScaling;
-      finalVideoWidth = finalVideoHeight * inputAspectRatio;
+      debugPrint("heigth is greater than with zero rotation is $rotation ");
+      finalVideoWidth = newWidth * scalingRatio * extraScaling;
+      finalVideoHeight = finalVideoWidth / inputAspectRatio;
+      // finalVideoWidth = finalVideoHeight * inputAspectRatio;
     } else {
-      finalVideoHeight = newHeight * extraScaling;
-      finalVideoWidth = finalVideoHeight * inputAspectRatio;
+      debugPrint("heigth is greater than with some rotation of $rotation ");
+      finalVideoWidth = newWidth * extraScaling;
+      finalVideoHeight = finalVideoWidth / inputAspectRatio;
     }
   }
 
