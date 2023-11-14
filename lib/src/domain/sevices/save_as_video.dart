@@ -165,6 +165,7 @@ Future<Map<String, Object>> saveVideo(
 
   var data = {
     'type': "video",
+    'thumbnail': controlNotifier.mediaPath,
     'backgroundImage': backgroundImage,
     'videoPath': controlNotifier.videoPath,
     'filterString': filterString,
