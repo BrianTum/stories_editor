@@ -154,13 +154,12 @@ class _PaintingState extends State<Painting> {
     /// return Painting board
     return Consumer2<ControlNotifier, PaintingNotifier>(
       builder: (context, controlNotifier, paintingNotifier, child) {
-        return WillPopScope(
-          onWillPop: () async {
+        return PopScope(
+          onPopInvoked: (didPop) async {
             controlNotifier.isPainting = false;
             WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
               paintingNotifier.closeConnection();
             });
-            return true;
           },
           child: Scaffold(
             backgroundColor: Colors.transparent,

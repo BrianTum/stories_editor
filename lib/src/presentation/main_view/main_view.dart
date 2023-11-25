@@ -219,8 +219,10 @@ class _MainViewState extends State<MainView> {
   Widget build(BuildContext context) {
     final ScreenUtil screenUtil = ScreenUtil();
     return Scaffold(
-      body: WillPopScope(
-        onWillPop: _popScope,
+      body: PopScope(
+        onPopInvoked: (didPop) {
+          _popScope;
+        },
         child: Material(
           color: widget.editorBackgroundColor == Colors.transparent
               ? Colors.black

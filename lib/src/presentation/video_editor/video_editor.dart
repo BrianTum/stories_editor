@@ -133,8 +133,8 @@ class _VideoEditorState extends State<VideoEditor> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
+    return PopScope(
+      onPopInvoked: (dipPop) async => false,
       child: Scaffold(
         backgroundColor: Colors.black,
         body: _controller.initialized
