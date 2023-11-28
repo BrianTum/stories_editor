@@ -34,11 +34,13 @@ dependencies:
   #  git:
   #    url: https://github.com/bluefireteam/photo_view
   #    ref: 8156907eecfa812b181a5a729d790f6d399f311b
-  image_gallery_saver: ^2.0.3
-  #own packages
   gallery_media_picker:
     git:
       url: https://github.com/Picmoni/gallery_media_picker.git
+      
+  image_gallery_saver: ^2.0.3
+  #own packages
+ 
 
   # painting
   perfect_freehand: ^1.0.4
