@@ -38,8 +38,7 @@ dependencies:
   image_gallery_saver: ^2.0.3
   #own packages
   gallery_media_picker:
-    git:
-      url: https://github.com/Picmoni/gallery_media_picker.git
+    git: https://github.com/Picmoni/gallery_media_picker.git
  
   # painting
   perfect_freehand: ^1.0.4

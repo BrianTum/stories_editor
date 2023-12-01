@@ -219,9 +219,11 @@ packages:
   gallery_media_picker:
     dependency: transitive
     description:
-      path: "../../gallery_media_picker"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "7a955fc737b8f71fb5062692d5a3b9ab9eaeb085"
+      url: "https://github.com/Picmoni/gallery_media_picker.git"
+    source: git
     version: "0.1.0"
   helpers:
     dependency: transitive
