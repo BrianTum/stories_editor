@@ -52,7 +52,7 @@ class _PaintingState extends State<Painting> {
         PaintingNotifier paintingNotifier, ControlNotifier controlProvider) {
       final box = context.findRenderObject() as RenderBox;
       final offset = box.globalToLocal(details.globalPosition);
-      final point = Point(offset.dx, offset.dy);
+      final point = PointVector(offset.dx, offset.dy);
       final points = [point];
 
       /// validate allow pan area
@@ -79,7 +79,7 @@ class _PaintingState extends State<Painting> {
         PaintingNotifier paintingNotifier, ControlNotifier controlNotifier) {
       final box = context.findRenderObject() as RenderBox;
       final offset = box.globalToLocal(details.globalPosition);
-      final point = Point(offset.dx, offset.dy);
+      final point = PointVector(offset.dx, offset.dy);
       final points = [...line!.points, point];
 
       /// validate allow pan area

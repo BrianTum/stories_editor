@@ -4,7 +4,7 @@ import 'package:stories_editor/src/presentation/utils/constants/app_enums.dart';
 
 class PaintingModel {
   /// lines coordinates
-  List<Point> points;
+  List<PointVector> points;
 
   /// The base size (diameter) of the stroke.
   double size = 10;

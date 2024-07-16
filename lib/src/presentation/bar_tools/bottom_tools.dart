@@ -147,9 +147,9 @@ class _BottomToolsState extends State<BottomTools> {
                                       });
                                     },
                                     style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty
+                                      backgroundColor: WidgetStateProperty
                                           .resolveWith<Color>(
-                                        (Set<MaterialState> states) {
+                                        (Set<WidgetState> states) {
                                           if (activeButton == 1) {
                                             return controlNotifier
                                                 .gradientColors![controlNotifier
@@ -178,9 +178,9 @@ class _BottomToolsState extends State<BottomTools> {
                                       });
                                     },
                                     style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty
+                                      backgroundColor: WidgetStateProperty
                                           .resolveWith<Color>(
-                                        (Set<MaterialState> states) {
+                                        (Set<WidgetState> states) {
                                           if (activeButton == 2) {
                                             return controlNotifier
                                                 .gradientColors![controlNotifier
